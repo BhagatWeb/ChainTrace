@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiMenu, FiX } from 'react-icons/fi';
+import { Menu, X } from 'lucide-react';
 import WalletButton from '../wallet/WalletButton';
 
 const navLinks = [
@@ -17,26 +17,24 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-slate-200 bg-white h-16 flex items-center">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+    <header className="sticky top-0 z-30 border-b border-hairline bg-canvas/85 backdrop-blur-sm">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-slate-900 text-lg">
-          <span className="material-symbols-outlined text-black text-2xl">hub</span>
-          <span className="font-extrabold tracking-tight">ChainTrace</span>
+        <Link href="/" className="flex items-center gap-2">
+          <span className="material-symbols-outlined text-ink text-2xl">hub</span>
+          <span className="text-[15px] font-semibold tracking-tight text-ink">ChainTrace</span>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-8 text-sm text-ink-muted">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`font-medium text-sm transition-all duration-200 ${
-                  isActive
-                    ? 'text-black border-b-2 border-black pb-1'
-                    : 'text-slate-500 hover:text-black'
+                className={`transition-colors hover:text-ink ${
+                  isActive ? 'text-ink' : ''
                 }`}
               >
                 {link.label}
@@ -54,17 +52,17 @@ export default function Navbar() {
         <div className="flex items-center gap-2 md:hidden">
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-black transition-colors"
+            className="rounded-md p-2 text-ink-muted hover:bg-elevated hover:text-ink transition-colors"
             aria-label="Toggle menu"
           >
-            {mobileOpen ? <FiX className="h-5 w-5" /> : <FiMenu className="h-5 w-5" />}
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </div>
 
       {/* Mobile nav */}
       {mobileOpen && (
-        <div className="absolute top-16 left-0 right-0 border-b border-slate-250 px-4 py-4 md:hidden animate-slide-up bg-white z-40 shadow-sm">
+        <div className="absolute top-16 left-0 right-0 border-b border-hairline px-4 py-4 md:hidden animate-slide-up bg-canvas z-40">
           <nav className="flex flex-col gap-2">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
@@ -73,10 +71,10 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
+                  className={`rounded-md px-4 py-3 text-sm transition-colors ${
                     isActive
-                      ? 'bg-slate-100 text-black font-semibold'
-                      : 'text-slate-650 hover:bg-slate-50 hover:text-black'
+                      ? 'bg-elevated text-ink font-semibold'
+                      : 'text-ink-muted hover:bg-elevated/60 hover:text-ink'
                   }`}
                 >
                   {link.label}
@@ -84,7 +82,7 @@ export default function Navbar() {
               );
             })}
           </nav>
-          <div className="mt-4 border-t border-slate-100 pt-4">
+          <div className="mt-4 border-t border-hairline pt-4">
             <WalletButton />
           </div>
         </div>
