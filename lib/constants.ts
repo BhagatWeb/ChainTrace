@@ -14,13 +14,13 @@ export const ORDER_CONTRACT_ID =
   process.env.NEXT_PUBLIC_ORDER_CONTRACT_ID || 'CB56DGFX43XUXN2OASKM3SF6I3WWNYUM6KE7HKUKX3JSLZPYQSRQXOHH';
 
 export const STATUS_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
-  created: { bg: 'bg-zinc-800/40 border border-zinc-800', text: 'text-zinc-300', dot: 'bg-zinc-400' },
-  funded: { bg: 'bg-zinc-800/60 border border-zinc-700/50', text: 'text-zinc-200', dot: 'bg-zinc-300' },
-  shipped: { bg: 'bg-zinc-900 border border-zinc-800', text: 'text-zinc-300', dot: 'bg-white' },
-  delivered: { bg: 'bg-zinc-950 border border-zinc-800', text: 'text-zinc-300', dot: 'bg-zinc-400' },
-  inspected_passed: { bg: 'bg-white/10 border border-white/20', text: 'text-white', dot: 'bg-white' },
-  inspected_failed: { bg: 'bg-red-500/10 border border-red-500/20', text: 'text-red-400', dot: 'bg-red-500' },
-  refunded: { bg: 'bg-zinc-950 border border-zinc-900', text: 'text-zinc-500', dot: 'bg-zinc-700' },
+  created: { bg: 'bg-elevated/40 text-ink-muted border-hairline', text: 'text-ink-muted font-mono text-[10px] tracking-widest uppercase', dot: 'bg-ink-faint' },
+  funded: { bg: 'bg-brand/10 text-brand border-brand-muted/30', text: 'text-brand font-mono text-[10px] tracking-widest uppercase', dot: 'bg-brand' },
+  shipped: { bg: 'bg-long/10 text-long border-long/20', text: 'text-long font-mono text-[10px] tracking-widest uppercase font-bold', dot: 'bg-long animate-pulse' },
+  delivered: { bg: 'bg-paper text-canvas border-paper', text: 'text-canvas font-mono text-[10px] tracking-widest uppercase font-bold', dot: 'bg-canvas' },
+  inspected_passed: { bg: 'bg-paper text-canvas border-paper shadow-glow', text: 'text-canvas font-mono text-[10px] tracking-widest uppercase font-bold', dot: 'bg-canvas' },
+  inspected_failed: { bg: 'bg-short/10 text-short border-short/20', text: 'text-short font-mono text-[10px] tracking-widest uppercase font-bold', dot: 'bg-short' },
+  refunded: { bg: 'bg-transparent text-ink-faint border-hairline line-through', text: 'text-ink-faint font-mono text-[10px] tracking-widest uppercase line-through', dot: 'bg-hairline' },
 };
 
 export const STATUS_LABELS: Record<string, string> = {
