@@ -27,8 +27,8 @@ export default function WalletButton() {
     return (
       <div className="flex flex-wrap items-center gap-2">
         {/* Balance display */}
-        <div className="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs font-semibold text-slate-800">
-          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+        <div className="inline-flex h-10 items-center gap-2 rounded-none border border-white/20 bg-black/40 backdrop-blur-sm px-3 text-xs font-mono tracking-widest text-white">
+          <span className="h-2 w-2 rounded-none bg-emerald-500 animate-pulse" />
           {balance} XLM
         </div>
 
@@ -39,11 +39,11 @@ export default function WalletButton() {
           title="Copy address"
         >
           {copied ? (
-            <FiCheck className="h-3.5 w-3.5 text-emerald-650" />
+            <FiCheck className="h-3.5 w-3.5 text-emerald-500" />
           ) : (
-            <FiCopy className="h-3.5 w-3.5 text-slate-500" />
+            <FiCopy className="h-3.5 w-3.5 text-white/60" />
           )}
-          <span className="font-mono text-slate-800 ml-1.5">{stellar.formatAddress(publicKey || '', 4, 4)}</span>
+          <span className="font-mono text-white ml-1.5">{stellar.formatAddress(publicKey || '', 4, 4)}</span>
         </button>
 
         {/* Disconnect button */}
@@ -52,7 +52,7 @@ export default function WalletButton() {
           className="btn-secondary h-10 px-3"
           title="Disconnect"
         >
-          <FiLogOut className="h-4 w-4 text-slate-650" />
+          <FiLogOut className="h-4 w-4 text-white/60" />
         </button>
       </div>
     );
@@ -63,18 +63,18 @@ export default function WalletButton() {
       <button
         onClick={() => setDropdownOpen(!dropdownOpen)}
         disabled={loading}
-        className="bg-black text-white hover:bg-slate-800 px-4 h-10 text-label-md font-label-md rounded-lg transition-all active:scale-95 flex items-center gap-2"
+        className="btn-primary px-4 h-10"
       >
         {loading ? (
           <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
         ) : (
           <FiCreditCard className="h-4 w-4" />
         )}
-        {loading ? 'Connecting...' : 'Connect Wallet'}
+        {loading ? 'CONNECTING...' : 'CONNECT WALLET'}
       </button>
 
       {dropdownOpen && !loading && (
-        <div className="absolute right-0 top-12 z-50 w-60 rounded-xl border border-slate-200 bg-white p-2 shadow-lg animate-slide-up">
+        <div className="absolute right-0 top-12 z-50 w-60 rounded-none border border-white/20 bg-black p-2 shadow-lg animate-slide-up">
           {walletOptions.map((wallet) => (
             <button
               key={wallet.id}
@@ -82,11 +82,11 @@ export default function WalletButton() {
                 setDropdownOpen(false);
                 connect(wallet.id);
               }}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors hover:bg-slate-100"
+              className="flex w-full items-center gap-3 rounded-none px-3 py-2.5 text-left text-sm transition-colors hover:bg-white/10"
             >
               <div>
-                <p className="font-medium text-slate-900">{wallet.label}</p>
-                <p className="text-xs text-slate-500">{wallet.note}</p>
+                <p className="font-mono text-white">{wallet.label.toUpperCase()}</p>
+                <p className="text-[10px] font-mono text-white/50">{wallet.note.toUpperCase()}</p>
               </div>
             </button>
           ))}
@@ -94,7 +94,7 @@ export default function WalletButton() {
       )}
 
       {error && (
-        <p className="absolute right-0 top-12 mt-1 max-w-xs text-xs text-red-500">
+        <p className="absolute right-0 top-12 mt-1 max-w-xs text-xs font-mono text-red-500">
           {error}
         </p>
       )}
