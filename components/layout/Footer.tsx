@@ -8,9 +8,6 @@ export default function Footer() {
           <FiActivity className="h-4 w-4 text-white" />
           <span>CHAINTRACE — TRUSTLESS TRADE</span>
         </div>
-        <div className="flex items-center gap-4 text-[10px] text-white/40 font-mono tracking-widest">
-          <span>BUILT FOR RISEIN LEVEL 3</span>
-        </div>
       </div>
     </footer>
   );
