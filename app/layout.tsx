@@ -54,6 +54,8 @@ export default function RootLayout({
               background: 'rgb(16, 16, 19)',
               color: 'rgb(246, 246, 248)',
               border: '1px solid rgb(33, 33, 39)',
+            },
+          }}
         />
         <Analytics />
         <SpeedInsights />
