@@ -1,183 +1,322 @@
-import Link from 'next/link';
+"use client";
 
-export default function LandingPage() {
+import { ArrowRight, ArrowUpRight, Shield, Activity, Shuffle, Coins, TrendingDown, KeyRound } from "lucide-react";
+import Link from "next/link";
+import { HeroPreview } from "@/components/brand/hero-preview";
+import { Reveal } from "@/components/ui/reveal";
+import { HelixButton } from "@/components/ui/helix-button";
+
+const STATS = [
+  { label: "Active Escrows", value: "1,492" },
+  { label: "Connected Ports", value: "32" },
+  { label: "Avg. Settlement", value: "< 24 Hours" },
+  { label: "Settlement Asset", value: "USDC" },
+];
+
+// Inline features grid config is inside Bento Grid below
+
+const PIPELINE_STEPS = [
+  { id: 1, step: "01", title: "ORDER FUNDED", desc: "Buyer deposits USDC into Soroban vault escrow contract.", detail: "Tx Confirmed · Testnet" },
+  { id: 2, step: "02", title: "CARGO SHIPPED", desc: "Vessel details & Bill of Lading hash logged on-chain.", detail: "Ever Given II · Singapore Port" },
+  { id: 3, step: "03", title: "INSPECTION CLEAR", desc: "Port authority uploads digital validation signature.", detail: "Active · Hamburg Custom House" },
+  { id: 4, step: "04", title: "PAYMENT RELEASED", desc: "Escrow funds automatically unlock and route to supplier.", detail: "Pending verification" }
+];
+
+export default function Landing() {
   return (
-    <div className="animate-fade-in space-y-16 py-12">
+    <div className="relative min-h-screen">
+      {/* Hero grid background */}
+      <div className="grid-bg pointer-events-none absolute inset-0 -z-10" />
+
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="flex flex-col lg:flex-row items-center gap-8 py-8 lg:py-16">
-          <div className="flex-1 space-y-6">
-            <div className="inline-flex items-center px-3 py-1 bg-slate-100 border border-slate-200 text-slate-800 text-xs font-semibold rounded-full tracking-wider uppercase">
-              Soroban Powered Trade Escrows
-            </div>
-            <h1 className="font-extrabold text-4xl sm:text-5xl lg:text-6xl text-slate-900 leading-tight">
-              Decentralized Logistics &amp; Milestone Escrows
+      <section className="relative overflow-hidden">
+        <div className="relative mx-auto grid max-w-6xl items-center gap-16 px-6 pb-24 pt-20 md:pt-28 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="space-y-8">
+            <p className="eyebrow animate-reveal-up" style={{ animationDelay: "0ms" }}>
+              Trustless Trade & Escrow Protocol · Soroban
+            </p>
+            <h1
+              className="font-display max-w-2xl animate-reveal-up text-[3.5rem] leading-[0.93] tracking-[-0.045em] text-ink sm:text-6xl md:text-[5rem]"
+              style={{ animationDelay: "80ms" }}
+            >
+              Supply chain financing, redefined.
             </h1>
-            <p className="text-lg text-slate-500 max-w-xl leading-relaxed">
-              Remove counterparty risks in global trade. Coordinate buyers, sellers, carriers, and inspectors trustlessly through Stellar smart contracts.
+            <p
+              className="max-w-lg animate-reveal-up text-lg leading-relaxed text-ink-muted"
+              style={{ animationDelay: "180ms" }}
+            >
+              Eliminate counterparty risk and speed up capital velocity. Lock funds in secure, milestone-based escrow contracts, and settle instantly with Stellar anchors.
             </p>
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Link href="/dashboard" className="bg-black text-white px-8 py-3 text-sm font-semibold rounded hover:bg-slate-800 transition-all active:scale-95">
-                Access Trade Dashboard
+            <div className="flex animate-reveal-up flex-wrap items-center gap-3" style={{ animationDelay: "260ms" }}>
+              <Link href="/dashboard">
+                <HelixButton variant="primary" size="lg">
+                  Launch Console <ArrowRight className="h-4 w-4" />
+                </HelixButton>
               </Link>
-              <Link href="/transfer" className="bg-white border border-slate-200 text-slate-900 px-8 py-3 text-sm font-semibold rounded hover:bg-slate-50 transition-all active:scale-95">
-                Direct XLM Transfer
+              <Link href="/transfer">
+                <HelixButton variant="secondary" size="lg">
+                  Direct Transfer
+                </HelixButton>
               </Link>
             </div>
           </div>
-          <div className="flex-1 w-full relative">
-            <div className="aspect-square w-full max-w-md mx-auto bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm p-8 relative flex flex-col justify-between">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Smart Contract ID</p>
-                  <p className="font-mono text-sm text-slate-950 font-bold mt-1">CBAF...LJ47</p>
-                </div>
-                <span className="material-symbols-outlined text-slate-900 text-3xl">encrypted</span>
-              </div>
-              <div className="space-y-4">
-                <div className="h-px bg-slate-200 w-full"></div>
-                <div className="flex justify-between text-xs text-slate-500 font-semibold uppercase tracking-widest">
-                  <span>Escrow Balance</span>
-                  <span className="text-emerald-600">Locked</span>
-                </div>
-                <div className="text-3xl font-extrabold text-slate-950">
-                  50,000 XLM
-                </div>
-              </div>
-            </div>
+          
+          <div className="relative hidden animate-reveal-up justify-self-center lg:flex lg:justify-self-end" style={{ animationDelay: "340ms" }}>
+            {/* Glow background behind hero mockup */}
+            <div className="pointer-events-none absolute -inset-10 -z-10 rounded-[48px] bg-brand/[0.08] blur-[90px]" />
+            <HeroPreview />
           </div>
         </div>
       </section>
 
-      {/* Pipeline Console Section */}
-      <section className="bg-slate-50 border-y border-slate-200 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-2">
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900">Global Pipeline Console</h2>
-              <p className="text-sm text-slate-500 mt-1">Route: SIN (Singapore) → HAM (Hamburg) • Shipment ID: #CT-88291</p>
-            </div>
-            <div className="flex gap-4">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#10B981]"></span>
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Completed</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#3B82F6]"></span>
-                </span>
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Active</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Bento Grid Layout for Pipeline */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
-            {/* Milestone 1 */}
-            <div className="high-air-card p-6 flex flex-col justify-between h-48 rounded-xl relative overflow-hidden shadow-sm">
-              <div className="flex justify-between items-start">
-                <div className="w-8 h-8 flex items-center justify-center bg-[#10B981] text-white rounded-full">
-                  <span className="material-symbols-outlined text-sm font-bold">check</span>
+      {/* Live Marquee (decorative supply chain stats ticker) */}
+      <div aria-hidden className="border-y border-hairline bg-surface py-3.5">
+        <div className="mask-fade-r overflow-hidden">
+          <div className="flex w-max animate-marquee items-center gap-10 pr-10">
+            {Array.from({ length: 4 }).map((_, outerIdx) => (
+              <div key={outerIdx} className="flex items-center gap-10">
+                <div className="flex items-center gap-3 whitespace-nowrap">
+                  <span className="text-sm font-medium text-ink font-mono uppercase tracking-wider">Total Volume Secured</span>
+                  <span className="tnum text-sm text-brand font-bold">$12.4M USDC</span>
+                  <span className="text-ink-faint">·</span>
                 </div>
-                <span className="text-xs font-bold text-slate-400">Oct 12</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-900 text-base">Order Funded</h3>
-                <p className="text-xs text-slate-500 mt-1">Escrow wallet verified &amp; locked.</p>
-              </div>
-            </div>
-
-            {/* Milestone 2 */}
-            <div className="high-air-card p-6 flex flex-col justify-between h-48 rounded-xl relative overflow-hidden shadow-sm">
-              <div className="flex justify-between items-start">
-                <div className="w-8 h-8 flex items-center justify-center bg-[#10B981] text-white rounded-full">
-                  <span className="material-symbols-outlined text-sm font-bold">check</span>
+                <div className="flex items-center gap-3 whitespace-nowrap">
+                  <span className="text-sm font-medium text-ink font-mono uppercase tracking-wider">Average Processing</span>
+                  <span className="tnum text-sm text-emerald-400 font-bold">1.2s / Ledger</span>
+                  <span className="text-ink-faint">·</span>
                 </div>
-                <span className="text-xs font-bold text-slate-400">Oct 14</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-900 text-base">Cargo Shipped</h3>
-                <p className="text-xs text-slate-500 mt-1">Vessel: &quot;Ever Given II&quot;</p>
-              </div>
-            </div>
-
-            {/* Milestone 3 */}
-            <div className="high-air-card border-2 border-black p-6 flex flex-col justify-between h-48 rounded-xl relative overflow-hidden shadow-sm bg-white">
-              <div className="flex justify-between items-start">
-                <div className="w-8 h-8 flex items-center justify-center border-2 border-[#3B82F6] rounded-full relative">
-                  <div className="w-2.5 h-2.5 bg-[#3B82F6] rounded-full animate-status-pulse"></div>
+                <div className="flex items-center gap-3 whitespace-nowrap">
+                  <span className="text-sm font-medium text-ink font-mono uppercase tracking-wider">USDC Anchor liquidity</span>
+                  <span className="tnum text-sm text-ink-muted font-bold">Optimal</span>
+                  <span className="text-ink-faint">·</span>
                 </div>
-                <span className="text-xs font-bold text-black tracking-widest uppercase">IN PROGRESS</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-900 text-base">Inspection Clear</h3>
-                <p className="text-xs text-slate-500 mt-1">Awaiting digital signature from Hamburg Port.</p>
-              </div>
-            </div>
-
-            {/* Milestone 4 */}
-            <div className="high-air-card p-6 flex flex-col justify-between h-48 rounded-xl relative overflow-hidden shadow-sm opacity-60">
-              <div className="flex justify-between items-start">
-                <div className="w-8 h-8 flex items-center justify-center bg-slate-200 text-slate-500 rounded-full">
-                  <span className="material-symbols-outlined text-sm">hourglass_empty</span>
+                <div className="flex items-center gap-3 whitespace-nowrap">
+                  <span className="text-sm font-medium text-ink font-mono uppercase tracking-wider">Soroban Engine Version</span>
+                  <span className="tnum text-sm text-ink-faint font-bold">Mainnet Ready</span>
+                  <span className="text-ink-faint">·</span>
                 </div>
-                <span className="text-xs font-bold text-slate-400">Pending</span>
               </div>
-              <div>
-                <h3 className="font-bold text-slate-900 text-base">Payment Released</h3>
-                <p className="text-xs text-slate-500 mt-1">Instant settlement upon validation.</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Feature Highlight */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="bg-cover bg-center aspect-video rounded-xl border border-slate-200 bg-slate-100 flex items-center justify-center text-slate-400"
-               style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuA0TMXfAyyia6zF06CB90XxMFNGx9kMp8iGNdNGJMDv5uCqR9hI2_cavHO_X4sq7FENcILA0oXUuVjCyv1fjazU7pdHkbkSF1nxhtU7-qUh5jpJJbN9-96MfW0emrqPUTWIqGAdr06_mfBDJaJfiP4lq3ZtfmtX1dKB18D6Px9mowGipWvGBEzYBGg_m2KD_HEnFqHLUYNYpWMlK6aYp0DvIGgkD952cqfiD7oUA76OYRO9L6OXgeL_mkeI3L8Sil7bgzj0c_-ASNI')` }}>
+      {/* Stats Band */}
+      <Reveal>
+        <section className="mx-auto max-w-6xl px-6 pt-16">
+          <div className="grid grid-cols-2 divide-x divide-hairline overflow-hidden rounded-xl border border-hairline bg-surface md:grid-cols-4">
+            {STATS.map((s, idx) => (
+              <div key={idx} className="px-6 py-7">
+                <p className="eyebrow mb-2.5">{s.label}</p>
+                <p className="font-display text-3xl text-ink md:text-4xl">{s.value}</p>
+              </div>
+            ))}
           </div>
-          <div className="space-y-6">
-            <h2 className="text-3xl font-extrabold text-slate-900 leading-tight">Trustless Verification at Every Port</h2>
-            <p className="text-slate-500 leading-relaxed">
-              ChainTrace integrates with port authorities and independent inspectors via Soroban smart contracts. No more manual paperwork or delayed wire transfers. Once a verified inspector uploads the hash of the bill of lading, funds are automatically triggered.
+        </section>
+      </Reveal>
+
+      {/* Narrative Section ("Why Stellar") */}
+      <section className="mx-auto max-w-6xl px-6 py-24 md:py-32">
+        <div className="grid gap-10 md:grid-cols-12 md:gap-16">
+          <Reveal className="md:col-span-5">
+            <p className="eyebrow mb-5">Why Stellar</p>
+            <h2 className="font-display text-4xl leading-[1.05] text-ink md:text-5xl">
+              An interoperable network built for real-world fiat anchors.
+            </h2>
+          </Reveal>
+          <Reveal delay={120} className="space-y-6 md:col-span-7 md:pt-2">
+            <p className="text-lg leading-relaxed text-ink-muted">
+              Ethereum L2s and other chains lack native, standardized fiat integration. Stellar&apos;s anchors (via SEP-24 and SEP-31 standards) act as native ramps, allowing a buyer in the USA to fund in USD and a supplier in Mexico to off-ramp directly in MXN.
             </p>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-[#10B981] mt-0.5">task_alt</span>
+            <p className="text-base leading-relaxed text-ink-faint">
+              Soroban smart contracts bind this entire flow together with sub-cent transactions. SMEs can trigger micro-milestone escrows dynamically, completely avoiding expensive traditional banking rails like letters of credit.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Pipeline Section (Milestones modeled after Helix markets table) */}
+      <Reveal>
+        <section className="mx-auto max-w-6xl px-6 pb-24">
+          <p className="eyebrow mb-8">Active Trade Pipeline Console</p>
+          <div className="border-t border-hairline">
+            {PIPELINE_STEPS.map((step) => (
+              <div
+                key={step.id}
+                className="group grid grid-cols-[2.5rem_1fr_auto] items-center gap-5 border-b border-hairline px-1 py-6 md:grid-cols-[3rem_1fr_1fr_auto] md:gap-8 hover:bg-surface/30 transition-colors"
+              >
+                <span className="tnum text-lg text-brand/70 font-mono">{step.step}</span>
                 <div>
-                  <p className="font-bold text-sm text-slate-900">Immutable Audit Trail</p>
-                  <p className="text-xs text-slate-500 mt-0.5">Every handover is timestamped and signed on the Stellar ledger.</p>
+                  <div className="font-display text-xl text-ink md:text-2xl">{step.title}</div>
+                  <div className="mt-0.5 text-xs text-ink-faint font-mono">
+                    {step.desc}
+                  </div>
                 </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-[#10B981] mt-0.5">task_alt</span>
+                <div className="hidden text-right md:block">
+                  <div className="text-sm text-ink font-mono">{step.detail}</div>
+                  <div className="text-[10px] text-ink-faint uppercase font-mono mt-0.5">Status Checked</div>
+                </div>
+                <ArrowUpRight className="h-5 w-5 text-ink-faint transition-all group-hover:translate-x-0.5 group-hover:text-ink" />
+              </div>
+            ))}
+          </div>
+        </section>
+      </Reveal>
+
+      {/* Protocol Features Section (Asymmetric Bento Grid) */}
+      <section className="border-t border-hairline bg-surface/20">
+        <div className="mx-auto max-w-6xl px-6 py-24 md:py-32 space-y-16">
+          <div className="max-w-2xl">
+            <p className="eyebrow mb-5">Core Capabilities</p>
+            <h2 className="font-display text-4xl leading-[1.05] text-ink md:text-5xl">
+              Trustless Escrow for Global Trade.
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-ink-muted">
+              An auditable, registry-vault design built from the ground up for trade, logic isolation, and anchor integrations.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Box 1: Hardened Soroban Escrow (Span 2) */}
+            <Reveal className="md:col-span-2 border border-hairline bg-surface p-8 rounded-2xl relative overflow-hidden group hover:border-brand/40 transition-all duration-300">
+              <div className="absolute top-0 right-0 w-44 h-44 bg-brand/[0.04] blur-[40px] rounded-full pointer-events-none transition-all group-hover:bg-brand/[0.07]" />
+              <div className="flex flex-col justify-between h-full space-y-8">
+                <div className="flex justify-between items-start">
+                  <div className="h-10 w-10 bg-brand/10 border border-brand/20 flex items-center justify-center rounded-lg text-brand">
+                    <Shield className="h-5 w-5" />
+                  </div>
+                  <span className="text-2xs text-ink-faint font-mono uppercase tracking-wider">01 // SECURITY</span>
+                </div>
                 <div>
-                  <p className="font-bold text-sm text-slate-900">Zero Gas Soroban</p>
-                  <p className="text-xs text-slate-500 mt-0.5">Execute complex logic with the industry&apos;s lowest overhead.</p>
+                  <h3 className="text-xl font-display font-semibold text-ink">Hardened Soroban Escrow</h3>
+                  <p className="mt-2 text-sm text-ink-muted leading-relaxed font-mono">
+                    Multi-contract registry and vault system separating execution logic from capital custody. Each contract is fully auditable on-chain, protecting buyers and suppliers alike.
+                  </p>
                 </div>
-              </li>
-            </ul>
+              </div>
+            </Reveal>
+
+            {/* Box 2: Live Port Telemetry (Span 1) */}
+            <Reveal className="border border-hairline bg-surface p-8 rounded-2xl relative overflow-hidden group hover:border-brand/40 transition-all duration-300">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/[0.03] blur-[30px] rounded-full pointer-events-none transition-all group-hover:bg-emerald-500/[0.06]" />
+              <div className="flex flex-col justify-between h-full space-y-8">
+                <div className="flex justify-between items-start">
+                  <div className="h-10 w-10 bg-long/10 border border-long/20 flex items-center justify-center rounded-lg text-long animate-pulse-soft">
+                    <Activity className="h-5 w-5" />
+                  </div>
+                  <span className="text-2xs text-ink-faint font-mono uppercase tracking-wider">02 // TRACKING</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-display font-semibold text-ink">Live Port Telemetry</h3>
+                  <p className="mt-2 text-sm text-ink-muted leading-relaxed font-mono">
+                    Real-time verification feeds stream customs, bill of lading, and port clearance events directly into trade smart contracts.
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Box 3: SEP-24 & SEP-31 Off-Ramps (Span 1) */}
+            <Reveal className="border border-hairline bg-surface p-8 rounded-2xl relative overflow-hidden group hover:border-brand/40 transition-all duration-300">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-brand/[0.03] blur-[30px] rounded-full pointer-events-none" />
+              <div className="flex flex-col justify-between h-full space-y-8">
+                <div className="flex justify-between items-start">
+                  <div className="h-10 w-10 bg-brand/10 border border-brand/20 flex items-center justify-center rounded-lg text-brand">
+                    <Shuffle className="h-5 w-5" />
+                  </div>
+                  <span className="text-2xs text-ink-faint font-mono uppercase tracking-wider">03 // FIAT ACCESS</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-display font-semibold text-ink">SEP-24 & SEP-31 Off-Ramps</h3>
+                  <p className="mt-2 text-sm text-ink-muted leading-relaxed font-mono">
+                    Suppliers receive local fiat payments (MXN, BRL, EUR) directly to their bank accounts immediately upon milestone verification.
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Box 4: Multi-Currency Escrows (Span 1) */}
+            <Reveal className="border border-hairline bg-surface p-8 rounded-2xl relative overflow-hidden group hover:border-brand/40 transition-all duration-300">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/[0.03] blur-[30px] rounded-full pointer-events-none" />
+              <div className="flex flex-col justify-between h-full space-y-8">
+                <div className="flex justify-between items-start">
+                  <div className="h-10 w-10 bg-brand/10 border border-brand/20 flex items-center justify-center rounded-lg text-brand">
+                    <Coins className="h-5 w-5" />
+                  </div>
+                  <span className="text-2xs text-ink-faint font-mono uppercase tracking-wider">04 // LIQUIDITY</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-display font-semibold text-ink">Multi-Currency Escrows</h3>
+                  <p className="mt-2 text-sm text-ink-muted leading-relaxed font-mono">
+                    Lock trade capital in digital USD (USDC), Euro (EURC), or native XLM. Manage pricing variables dynamically with swappable oracle adapters.
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Box 5: Predictable, Low Fees (Span 1) */}
+            <Reveal className="border border-hairline bg-surface p-8 rounded-2xl relative overflow-hidden group hover:border-brand/40 transition-all duration-300">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/[0.03] blur-[30px] rounded-full pointer-events-none" />
+              <div className="flex flex-col justify-between h-full space-y-8">
+                <div className="flex justify-between items-start">
+                  <div className="h-10 w-10 bg-long/10 border border-long/20 flex items-center justify-center rounded-lg text-long">
+                    <TrendingDown className="h-5 w-5" />
+                  </div>
+                  <span className="text-2xs text-ink-faint font-mono uppercase tracking-wider">05 // VELOCITY</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-display font-semibold text-ink">Predictable, Low Fees</h3>
+                  <p className="mt-2 text-sm text-ink-muted leading-relaxed font-mono">
+                    Execute complex conditional trade logic for under a fraction of a cent, shielding SMEs from volatile gas price spikes.
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Box 6: Rigorous Access Control (Span 3) */}
+            <Reveal className="md:col-span-3 border border-hairline bg-surface p-8 rounded-2xl relative overflow-hidden group hover:border-brand/40 transition-all duration-300">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/[0.02] blur-[50px] rounded-full pointer-events-none transition-all group-hover:bg-red-500/[0.04]" />
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 bg-short/10 border border-short/20 flex items-center justify-center rounded-lg text-short">
+                      <KeyRound className="h-5 w-5" />
+                    </div>
+                    <span className="text-2xs text-ink-faint font-mono uppercase tracking-wider">06 // GOVERNANCE</span>
+                  </div>
+                  <h3 className="text-xl font-display font-semibold text-ink">Rigorous Access Control &amp; Safeguards</h3>
+                  <p className="max-w-2xl text-sm text-ink-muted leading-relaxed font-mono">
+                    Role-based access permissions, multi-signature contract releases, and global emergency pause capability guard trade integrity under any network conditions.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2 md:self-end">
+                  {["Multisig Auth", "Time-locks", "Emergency Pause", "Audited Core"].map((lbl) => (
+                    <span key={lbl} className="px-3 py-1 text-[10px] font-mono uppercase tracking-wider bg-canvas border border-hairline rounded-md text-ink-muted">
+                      {lbl}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-black p-8 sm:p-12 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-          <div className="space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white">Secure Your Next Trade</h2>
-            <p className="text-slate-400 text-sm sm:text-base">Start your first milestone-based shipment on ChainTrace today.</p>
-          </div>
-          <div className="flex gap-4">
-            <Link href="/dashboard" className="bg-white text-black px-8 py-3 text-sm font-semibold rounded hover:bg-slate-100 transition-colors">
-              Launch App
+      {/* Closing CTA */}
+      <Reveal>
+        <section className="mx-auto max-w-6xl px-6 py-24 text-center md:py-28">
+          <p className="eyebrow mb-6">Built on Stellar Soroban</p>
+          <h2 className="font-display mx-auto max-w-3xl text-balance text-5xl leading-[1.03] text-ink md:text-7xl">
+            Secure your global trade in sixty seconds.
+          </h2>
+          <div className="mt-10 flex justify-center gap-3">
+            <Link href="/dashboard">
+              <HelixButton variant="primary" size="lg">
+                Enter Dashboard <ArrowRight className="h-4 w-4" />
+              </HelixButton>
             </Link>
           </div>
-        </div>
-      </section>
+        </section>
+      </Reveal>
     </div>
   );
 }
