@@ -9,8 +9,8 @@ ChainTrace is a decentralized trade coordination and financing protocol built on
 *   **🌐 Live Production Link**: [https://chain-trace.netlify.app/](https://chain-trace.netlify.app/)
 *   **📹 Demo Video Presentation**: [Google Drive Video Demo](https://drive.google.com/file/d/1ZwH7PVVpRn0xglDTZJ7jcAVxRAkEZkoe/view)
 *   **💻 GitHub Repository**: [https://github.com/BhagatWeb/-ChainTrace-](https://github.com/BhagatWeb/-ChainTrace-)
-*   **📝 Feedback Form Link**: [Google Form](https://forms.gle/bMy9Vy5376z9RX9UA)
-*   **📊 Feedback Responses**: [Google Sheet Responses](https://docs.google.com/spreadsheets/d/1bXkiT1P9mHkYrbHz7-K36U2AuAKzh3jTcSz6kxmsuM8/edit?resourcekey=&gid=481046294#gid=481046294)
+*   **📝 Feedback Form Link**: [Google Form](https://forms.gle/jNKFMPF2CB2uar19A)
+*   **📊 Feedback Responses**: [Google Sheet Responses](https://docs.google.com/spreadsheets/d/1RA8W76kNOyhn0DUy0bQUQ-9Ps4AQBOqWaXPDa4aq9Aw/edit?resourcekey=&gid=1409244994#gid=1409244994)
 
 ---
 
