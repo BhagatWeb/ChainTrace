@@ -54,26 +54,32 @@ export default function CreateOrderPage() {
   };
 
   return (
-    <div className="mx-auto max-w-xl px-4 py-12 animate-fade-in">
-      <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-black transition-colors mb-6 font-semibold uppercase tracking-widest">
-        <span className="material-symbols-outlined text-sm">arrow_back</span> Back to Dashboard
+    <div className="mx-auto max-w-xl px-6 py-12 animate-fade-in">
+      <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-xs text-ink-muted hover:text-ink transition-colors mb-6 font-mono uppercase tracking-wider">
+        <span className="material-symbols-outlined text-sm">arrow_back</span> BACK TO DASHBOARD
       </Link>
 
-      <div className="card border border-slate-200 bg-white">
-        <h2 className="text-xl font-bold text-slate-900 mb-1">Create Supply Chain Order</h2>
-        <p className="text-xs text-slate-500 mb-6">
+      <div className="p-8 border border-hairline bg-surface rounded-xl shadow-soft relative overflow-hidden">
+        {/* Helix corner accent lines */}
+        <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-brand/30"></div>
+        <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-brand/30"></div>
+        <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-brand/30"></div>
+        <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-brand/30"></div>
+
+        <h2 className="text-xl font-bold text-ink mb-1 font-display tracking-tight uppercase">Create Supply Chain Order</h2>
+        <p className="text-2xs font-mono text-ink-faint mb-6 uppercase tracking-wider">
           Define supplier, shipper, inspector, and lockable escrow budget to launch the trade pipeline.
         </p>
 
         {!isConnected ? (
-          <div className="text-center py-8 bg-slate-50 rounded-lg border border-slate-200 p-4">
-            <span className="material-symbols-outlined text-3xl text-slate-400 mb-2">account_balance_wallet</span>
-            <p className="text-sm text-slate-600 font-semibold">Please connect your wallet first.</p>
+          <div className="text-center py-8 bg-canvas/30 rounded-lg border border-hairline p-4">
+            <span className="material-symbols-outlined text-3xl text-ink-faint mb-2">account_balance_wallet</span>
+            <p className="text-xs text-ink-muted font-mono uppercase tracking-wider">Please connect your wallet first.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1">
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest">
+              <label className="block text-2xs font-bold text-ink-faint font-mono uppercase tracking-widest">
                 Supplier Address
               </label>
               <input
@@ -82,13 +88,13 @@ export default function CreateOrderPage() {
                 value={supplier}
                 onChange={(e) => setSupplier(e.target.value)}
                 disabled={loading}
-                className="w-full h-12 bg-white border border-slate-200 rounded-lg px-4 text-slate-900 outline-none active-ring focus:border-black transition-all font-mono text-sm"
+                className="field-input"
                 required
               />
             </div>
 
             <div className="space-y-1">
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest">
+              <label className="block text-2xs font-bold text-ink-faint font-mono uppercase tracking-widest">
                 Logistics Shipper Address
               </label>
               <input
@@ -97,13 +103,13 @@ export default function CreateOrderPage() {
                 value={shipper}
                 onChange={(e) => setShipper(e.target.value)}
                 disabled={loading}
-                className="w-full h-12 bg-white border border-slate-200 rounded-lg px-4 text-slate-900 outline-none active-ring focus:border-black transition-all font-mono text-sm"
+                className="field-input"
                 required
               />
             </div>
 
             <div className="space-y-1">
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest">
+              <label className="block text-2xs font-bold text-ink-faint font-mono uppercase tracking-widest">
                 Inspector Address
               </label>
               <input
@@ -112,13 +118,13 @@ export default function CreateOrderPage() {
                 value={inspector}
                 onChange={(e) => setInspector(e.target.value)}
                 disabled={loading}
-                className="w-full h-12 bg-white border border-slate-200 rounded-lg px-4 text-slate-900 outline-none active-ring focus:border-black transition-all font-mono text-sm"
+                className="field-input"
                 required
               />
             </div>
 
             <div className="space-y-1">
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest">
+              <label className="block text-2xs font-bold text-ink-faint font-mono uppercase tracking-widest">
                 Order Value (XLM)
               </label>
               <input
@@ -129,7 +135,7 @@ export default function CreateOrderPage() {
                 value={amountXlm}
                 onChange={(e) => setAmountXlm(e.target.value)}
                 disabled={loading}
-                className="w-full h-12 bg-white border border-slate-200 rounded-lg px-4 text-slate-900 outline-none active-ring focus:border-black transition-all text-sm"
+                className="field-input"
                 required
               />
             </div>
@@ -137,17 +143,17 @@ export default function CreateOrderPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-black text-white h-12 rounded-lg font-semibold hover:bg-slate-800 active:scale-95 transition-all flex items-center justify-center gap-2 mt-4"
+              className="w-full btn-primary h-11 mt-4"
             >
               {loading ? (
                 <>
-                  <span className="animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
-                  Initializing...
+                  <span className="animate-spin h-4.5 w-4.5 rounded-full border-2 border-current border-t-transparent"></span>
+                  INITIALIZING...
                 </>
               ) : (
                 <>
                   <span className="material-symbols-outlined text-[18px]">add</span>
-                  Initialize Order
+                  INITIALIZE ORDER
                 </>
               )}
             </button>
