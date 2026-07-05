@@ -38,3 +38,7 @@ Cargo.lock
 
 # stitch designs
 stitch_chaintrace_web3_logistics_platform/
+
+# helix perp reference
+web/
+_web/
