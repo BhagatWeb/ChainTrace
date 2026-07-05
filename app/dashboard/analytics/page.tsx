@@ -239,8 +239,8 @@ export default function AnalyticsPage() {
                 <span className="text-xs text-ink-muted">10+ User Interactions Simulation</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-ink-faint text-lg">radio_button_unchecked</span>
-                <span className="text-xs text-ink-faint">DeFi Factoring Contract (Pending)</span>
+                <span className="material-symbols-outlined text-long text-lg">check_circle</span>
+                <span className="text-xs text-ink-muted">DeFi Factoring Contract (Complete)</span>
               </div>
             </div>
           </div>

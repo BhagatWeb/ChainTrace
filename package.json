@@ -13,6 +13,8 @@
   "dependencies": {
     "@creit.tech/stellar-wallets-kit": "^1.9.5",
     "@stellar/stellar-sdk": "^12.3.0",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",

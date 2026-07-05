@@ -6,6 +6,8 @@ import Footer from '@/components/layout/Footer';
 import { Grain } from '@/components/ui/grain';
 import { Aurora } from '@/components/ui/aurora';
 import { Toaster } from 'react-hot-toast';
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -52,9 +54,9 @@ export default function RootLayout({
               background: 'rgb(16, 16, 19)',
               color: 'rgb(246, 246, 248)',
               border: '1px solid rgb(33, 33, 39)',
-            },
-          }}
         />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
