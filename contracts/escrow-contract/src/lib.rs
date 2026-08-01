@@ -44,6 +44,20 @@ impl EscrowContract {
   pub fn deposit(env: Env, buyer: Address, order_id: u64, amount: i128) {
     buyer.require_auth();
 
+    if amount <= 0 {
+      panic!("Deposit amount must be positive");
+    }
+
+    if let Some(existing) = env
+      .storage()
+      .instance()
+      .get::<DataKey, EscrowDeposit>(&DataKey::Escrow(order_id))
+    {
+      if existing.is_active {
+        panic!("Escrow already active for this order");
+      }
+    }
+
     let deposit = EscrowDeposit {
       order_id,
       buyer: buyer.clone(),
@@ -93,6 +107,10 @@ impl EscrowContract {
     // Enforce that only the Order Contract can trigger releases
     order_contract.require_auth();
 
+    if amount <= 0 {
+      panic!("Release amount must be positive");
+    }
+
     let mut deposit: EscrowDeposit = env
       .storage()
       .instance()
@@ -107,7 +125,10 @@ impl EscrowContract {
       panic!("Release amount exceeds escrowed balance");
     }
 
-    deposit.is_active = false;
+    deposit.amount -= amount;
+    if deposit.amount == 0 {
+      deposit.is_active = false;
+    }
     env.storage()
       .instance()
       .set(&DataKey::Escrow(order_id), &deposit);
@@ -148,6 +169,7 @@ impl EscrowContract {
     }
 
     let refund_amount = deposit.amount;
+    deposit.amount = 0;
     deposit.is_active = false;
 
     env.storage()
@@ -175,6 +197,14 @@ impl EscrowContract {
       .instance()
       .get(&DataKey::Escrow(order_id))
       .unwrap()
+  }
+
+  pub fn has_active_escrow(env: Env, order_id: u64) -> bool {
+    env.storage()
+      .instance()
+      .get::<DataKey, EscrowDeposit>(&DataKey::Escrow(order_id))
+      .map(|d| d.is_active)
+      .unwrap_or(false)
   }
 
   pub fn get_total_escrowed(env: Env) -> i128 {
