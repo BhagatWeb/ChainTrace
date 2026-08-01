@@ -13,6 +13,7 @@ pub enum OrderStatus {
   Delivered,
   InspectedPassed,
   InspectedFailed,
+  Disputed,
   Refunded,
 }
 
@@ -64,6 +65,10 @@ impl OrderContract {
     amount: i128,
   ) -> u64 {
     buyer.require_auth();
+
+    if amount <= 0 {
+      panic!("Order amount must be positive");
+    }
 
     let count: u64 = env
       .storage()
@@ -222,6 +227,33 @@ impl OrderContract {
       .set(&DataKey::Order(order_id), &order);
   }
 
+  /// Raise a dispute on an active order.
+  /// Must be called by the buyer or supplier.
+  pub fn dispute_order(env: Env, caller: Address, order_id: u64) {
+    caller.require_auth();
+
+    let mut order: Order = env
+      .storage()
+      .instance()
+      .get(&DataKey::Order(order_id))
+      .unwrap();
+
+    if order.buyer != caller && order.supplier != caller {
+      panic!("Not authorized to dispute order");
+    }
+
+    if order.status != OrderStatus::Funded && order.status != OrderStatus::Shipped {
+      panic!("Order can only be disputed when funded or shipped");
+    }
+
+    order.status = OrderStatus::Disputed;
+    env.storage()
+      .instance()
+      .set(&DataKey::Order(order_id), &order);
+
+    env.events().publish(("order", "disputed"), (order_id, caller));
+  }
+
   /// Buyer requests refund for failed/disputed orders.
   pub fn refund_order(env: Env, buyer: Address, order_id: u64) {
     buyer.require_auth();
@@ -235,8 +267,8 @@ impl OrderContract {
     if order.buyer != buyer {
       panic!("Not authorized buyer");
     }
-    if order.status != OrderStatus::InspectedFailed {
-      panic!("Refund only allowed if order inspection failed");
+    if order.status != OrderStatus::InspectedFailed && order.status != OrderStatus::Disputed {
+      panic!("Refund only allowed if order inspection failed or is in dispute");
     }
 
     let escrow_contract: Address = env
