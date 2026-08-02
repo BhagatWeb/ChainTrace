@@ -45,8 +45,22 @@ fn test_create_order() {
 }
 
 #[test]
+#[should_panic(expected = "Order amount must be positive")]
+fn test_create_order_zero_amount() {
+  let (env, contract_id, _) = setup_env();
+  let client = OrderContractClient::new(&env, &contract_id);
+
+  let buyer = Address::generate(&env);
+  let supplier = Address::generate(&env);
+  let shipper = Address::generate(&env);
+  let inspector = Address::generate(&env);
+
+  client.create_order(&buyer, &supplier, &shipper, &inspector, &0);
+}
+
+#[test]
 fn test_order_lifecycle() {
-  let (env, contract_id, escrow_contract) = setup_env();
+  let (env, contract_id, _escrow_contract) = setup_env();
   let client = OrderContractClient::new(&env, &contract_id);
 
   let buyer = Address::generate(&env);
@@ -57,7 +71,6 @@ fn test_order_lifecycle() {
   let order_id = client.create_order(&buyer, &supplier, &shipper, &inspector, &500_0000000);
 
   // Escrow contract marks order as funded
-  // Since we set up mock_all_auths, we can make the call acting as escrow_contract
   client.mark_funded(&order_id);
   assert_eq!(client.get_order(&1).status, OrderStatus::Funded);
 
@@ -72,4 +85,29 @@ fn test_order_lifecycle() {
   // Inspect order - Passed
   client.inspect_order(&inspector, &order_id, &true);
   assert_eq!(client.get_order(&1).status, OrderStatus::InspectedPassed);
+}
+
+#[test]
+fn test_order_dispute_and_refund() {
+  let (env, contract_id, _escrow_contract) = setup_env();
+  let client = OrderContractClient::new(&env, &contract_id);
+
+  let buyer = Address::generate(&env);
+  let supplier = Address::generate(&env);
+  let shipper = Address::generate(&env);
+  let inspector = Address::generate(&env);
+
+  let order_id = client.create_order(&buyer, &supplier, &shipper, &inspector, &800_0000000);
+
+  // Fund order
+  client.mark_funded(&order_id);
+  assert_eq!(client.get_order(&1).status, OrderStatus::Funded);
+
+  // Buyer raises dispute
+  client.dispute_order(&buyer, &order_id);
+  assert_eq!(client.get_order(&1).status, OrderStatus::Disputed);
+
+  // Buyer claims refund on disputed order
+  client.refund_order(&buyer, &order_id);
+  assert_eq!(client.get_order(&1).status, OrderStatus::Refunded);
 }
