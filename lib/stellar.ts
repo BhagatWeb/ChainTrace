@@ -244,6 +244,7 @@ export class StellarHelper {
   /* ─── Utilities ─── */
 
   formatAddress(address: string, start: number = 4, end: number = 4): string {
+    if (!address || typeof address !== 'string') return '';
     if (address.length <= start + end) return address;
     return `${address.slice(0, start)}...${address.slice(-end)}`;
   }
@@ -253,17 +254,34 @@ export class StellarHelper {
   }
 
   stroopsToXlm(stroops: string | number | bigint): string {
-    const value = BigInt(stroops);
-    const whole = value / BigInt(10_000_000);
-    const fraction = value % BigInt(10_000_000);
-    return `${whole}.${String(fraction).padStart(7, '0')}`;
+    if (!stroops || String(stroops).trim() === '') return '0.0000000';
+    try {
+      const str = String(stroops).split('.')[0] || '0';
+      const isNegative = str.startsWith('-');
+      const absStr = isNegative ? str.slice(1) : str;
+      const value = BigInt(absStr);
+      const whole = value / BigInt(10_000_000);
+      const fraction = value % BigInt(10_000_000);
+      const res = `${whole}.${String(fraction).padStart(7, '0')}`;
+      return isNegative ? `-${res}` : res;
+    } catch {
+      return '0.0000000';
+    }
   }
 
   xlmToStroops(xlm: string): string {
-    const parts = xlm.split('.');
-    const whole = BigInt(parts[0] || '0') * BigInt(10_000_000);
-    const frac = parts[1] ? BigInt(parts[1].padEnd(7, '0').slice(0, 7)) : BigInt(0);
-    return String(whole + frac);
+    if (!xlm || String(xlm).trim() === '') return '0';
+    try {
+      const isNegative = xlm.startsWith('-');
+      const clean = isNegative ? xlm.slice(1) : xlm;
+      const parts = clean.split('.');
+      const whole = BigInt(parts[0] || '0') * BigInt(10_000_000);
+      const frac = parts[1] ? BigInt(parts[1].padEnd(7, '0').slice(0, 7)) : BigInt(0);
+      const result = whole + frac;
+      return isNegative ? `-${result}` : String(result);
+    } catch {
+      return '0';
+    }
   }
 }
 
