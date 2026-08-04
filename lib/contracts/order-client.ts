@@ -11,6 +11,7 @@ function parseOrderStatus(val: string): OrderStatus {
     Delivered: 'delivered',
     InspectedPassed: 'inspected_passed',
     InspectedFailed: 'inspected_failed',
+    Disputed: 'disputed',
     Refunded: 'refunded',
   };
   return map[val] || 'created';
@@ -114,6 +115,18 @@ export class OrderContractClient {
         StellarSdk.nativeToScVal(publicKey, { type: 'address' }),
         StellarSdk.nativeToScVal(orderId, { type: 'u64' }),
         StellarSdk.nativeToScVal(passed, { type: 'bool' }),
+      ],
+    });
+  }
+
+  async disputeOrder(publicKey: string, orderId: number): Promise<{ hash: string }> {
+    return stellar.buildAndSignTx({
+      publicKey,
+      contractId: this.contractId,
+      method: 'dispute_order',
+      args: [
+        StellarSdk.nativeToScVal(publicKey, { type: 'address' }),
+        StellarSdk.nativeToScVal(orderId, { type: 'u64' }),
       ],
     });
   }

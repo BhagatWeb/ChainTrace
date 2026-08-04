@@ -22,6 +22,7 @@ export type OrderStatus =
   | 'delivered'
   | 'inspected_passed'
   | 'inspected_failed'
+  | 'disputed'
   | 'refunded';
 
 export interface Order {
