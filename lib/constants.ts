@@ -20,6 +20,7 @@ export const STATUS_COLORS: Record<string, { bg: string; text: string; dot: stri
   delivered: { bg: 'bg-paper text-canvas border-paper', text: 'text-canvas font-mono text-[10px] tracking-widest uppercase font-bold', dot: 'bg-canvas' },
   inspected_passed: { bg: 'bg-paper text-canvas border-paper shadow-glow', text: 'text-canvas font-mono text-[10px] tracking-widest uppercase font-bold', dot: 'bg-canvas' },
   inspected_failed: { bg: 'bg-short/10 text-short border-short/20', text: 'text-short font-mono text-[10px] tracking-widest uppercase font-bold', dot: 'bg-short' },
+  disputed: { bg: 'bg-amber-500/10 text-amber-400 border-amber-500/30', text: 'text-amber-400 font-mono text-[10px] tracking-widest uppercase font-bold', dot: 'bg-amber-400 animate-pulse' },
   refunded: { bg: 'bg-transparent text-ink-faint border-hairline line-through', text: 'text-ink-faint font-mono text-[10px] tracking-widest uppercase line-through', dot: 'bg-hairline' },
 };
 
@@ -30,5 +31,6 @@ export const STATUS_LABELS: Record<string, string> = {
   delivered: 'Delivered',
   inspected_passed: 'Passed Quality Check',
   inspected_failed: 'Failed Quality Check',
+  disputed: 'Disputed',
   refunded: 'Refunded',
 };
