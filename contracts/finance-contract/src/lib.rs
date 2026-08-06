@@ -43,6 +43,10 @@ impl FinanceContract {
     pub fn request_loan(env: Env, borrower: Address, order_id: u64, amount: i128) -> u64 {
         borrower.require_auth();
 
+        if amount <= 0 {
+            panic!("Loan amount must be positive");
+        }
+
         let pool_balance: i128 = env
             .storage()
             .instance()
@@ -58,6 +62,16 @@ impl FinanceContract {
             .instance()
             .get(&DataKey::LoanCount)
             .unwrap_or(0);
+
+        // Ensure no existing unrepaid loan on the same order
+        for i in 1..=count {
+            if let Some(existing_loan) = env.storage().instance().get::<DataKey, Loan>(&DataKey::Loan(i)) {
+                if existing_loan.order_id == order_id && !existing_loan.repaid {
+                    panic!("Active loan already exists for this order");
+                }
+            }
+        }
+
         let loan_id = count + 1;
 
         // Interest rate is fixed at 5% of the principal for simplicity
@@ -121,6 +135,22 @@ impl FinanceContract {
             .instance()
             .get(&DataKey::Loan(loan_id))
             .expect("Loan not found")
+    }
+
+    pub fn get_loan_by_order(env: Env, order_id: u64) -> Option<Loan> {
+        let count: u64 = env
+            .storage()
+            .instance()
+            .get(&DataKey::LoanCount)
+            .unwrap_or(0);
+        for i in 1..=count {
+            if let Some(loan) = env.storage().instance().get::<DataKey, Loan>(&DataKey::Loan(i)) {
+                if loan.order_id == order_id {
+                    return Some(loan);
+                }
+            }
+        }
+        None
     }
 
     pub fn get_pool_balance(env: Env) -> i128 {
