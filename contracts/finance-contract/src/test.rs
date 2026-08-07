@@ -59,6 +59,41 @@ fn test_loan_repayment() {
 }
 
 #[test]
+#[should_panic(expected = "Loan amount must be positive")]
+fn test_loan_zero_amount() {
+    let (env, contract_id) = setup_env();
+    let client = FinanceContractClient::new(&env, &contract_id);
+
+    let supplier = Address::generate(&env);
+    client.request_loan(&supplier, &1u64, &0);
+}
+
+#[test]
+#[should_panic(expected = "Active loan already exists for this order")]
+fn test_duplicate_active_loan() {
+    let (env, contract_id) = setup_env();
+    let client = FinanceContractClient::new(&env, &contract_id);
+
+    let supplier = Address::generate(&env);
+    client.request_loan(&supplier, &99u64, &500_0000000);
+    client.request_loan(&supplier, &99u64, &500_0000000);
+}
+
+#[test]
+fn test_get_loan_by_order() {
+    let (env, contract_id) = setup_env();
+    let client = FinanceContractClient::new(&env, &contract_id);
+
+    let supplier = Address::generate(&env);
+    let order_id = 77u64;
+    let loan_id = client.request_loan(&supplier, &order_id, &1500_0000000);
+
+    let fetched = client.get_loan_by_order(&order_id).expect("Should find loan");
+    assert_eq!(fetched.id, loan_id);
+    assert_eq!(fetched.principal, 1500_0000000);
+}
+
+#[test]
 #[should_panic(expected = "Insufficient pool liquidity")]
 fn test_insufficient_liquidity() {
     let (env, contract_id) = setup_env();
