@@ -10,6 +10,8 @@ import { useContractEvents } from '@/hooks/useContractEvents';
 import { ORDER_CONTRACT_ID } from '@/lib/constants';
 import { stellar } from '@/lib/stellar';
 import { Badge } from '@/components/ui/Badge';
+import { OrderProgress } from '@/components/orders/OrderProgress';
+import { FactoringCalculator } from '@/components/finance/FactoringCalculator';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import type { Order } from '@/lib/types';
@@ -26,6 +28,7 @@ export default function OrderDetailPage() {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
+  const [showFactoring, setShowFactoring] = useState(false);
 
   const loadOrder = useCallback(async () => {
     if (!publicKey || !orderId) return;
@@ -144,6 +147,22 @@ export default function OrderDetailPage() {
             </button>
           )}
 
+          {(order.status === 'funded' || order.status === 'shipped') && (isBuyer || isSupplier) && (
+            <button
+              onClick={() =>
+                handleAction(
+                  () => orderClient.disputeOrder(publicKey, order.id),
+                  'Dispute initiated on-chain.'
+                )
+              }
+              disabled={actionLoading}
+              className="flex items-center gap-2 h-11 px-5 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-2xs tracking-widest uppercase hover:bg-amber-500/20 transition-all rounded-md font-semibold"
+            >
+              <span className="material-symbols-outlined text-[18px]">report_problem</span>
+              RAISE DISPUTE
+            </button>
+          )}
+
           {order.status === 'delivered' && isInspector && (
             <div className="flex gap-2">
               <button
@@ -175,7 +194,7 @@ export default function OrderDetailPage() {
             </div>
           )}
 
-          {order.status === 'inspected_failed' && isBuyer && (
+          {(order.status === 'inspected_failed' || order.status === 'disputed') && isBuyer && (
             <button
               onClick={() =>
                 handleAction(
@@ -183,6 +202,7 @@ export default function OrderDetailPage() {
                   'Funds successfully refunded!'
                 )
               }
+              disabled={actionLoading}
               className="flex items-center gap-2 h-11 px-5 bg-short/12 border border-short/25 text-short font-mono text-2xs tracking-widest uppercase hover:border-short/45 hover:bg-short/18 transition-all active:scale-[0.98] rounded-md font-semibold"
             >
               <span className="material-symbols-outlined text-[18px]">undo</span>
@@ -191,6 +211,29 @@ export default function OrderDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Visual Milestone Progression Component */}
+      <OrderProgress status={order.status} />
+
+      {/* Supplier Factoring Loan Option */}
+      {isSupplier && order.status === 'funded' && (
+        <div>
+          <button
+            onClick={() => setShowFactoring(!showFactoring)}
+            className="flex items-center gap-2 text-xs font-mono text-brand hover:underline uppercase tracking-wider mb-2"
+          >
+            <span className="material-symbols-outlined text-base">account_balance</span>
+            {showFactoring ? 'Hide Factoring Calculator' : 'Need Cash Now? Calculate Factoring Advance (5% APR)'}
+          </button>
+          {showFactoring && (
+            <FactoringCalculator
+              orderAmount={order.amount}
+              onApply={() => toast.success('Factoring application submitted to pool!')}
+              className="mt-2"
+            />
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Spec Grid & Details */}
