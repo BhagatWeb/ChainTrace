@@ -10,16 +10,62 @@ export default function DashboardPage() {
   const { publicKey, isConnected, connect } = useWallet();
   const { orders, loading } = useOrders(publicKey || undefined);
   const [activeTab, setActiveTab] = useState<'all' | 'buyer' | 'supplier' | 'shipper' | 'inspector'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
 
   const filteredOrders = orders.filter((order) => {
     if (!publicKey) return false;
     const pub = publicKey.toUpperCase();
-    if (activeTab === 'buyer') return order.buyer.toUpperCase() === pub;
-    if (activeTab === 'supplier') return order.supplier.toUpperCase() === pub;
-    if (activeTab === 'shipper') return order.shipper.toUpperCase() === pub;
-    if (activeTab === 'inspector') return order.inspector.toUpperCase() === pub;
+    
+    // Role filter
+    if (activeTab === 'buyer' && order.buyer.toUpperCase() !== pub) return false;
+    if (activeTab === 'supplier' && order.supplier.toUpperCase() !== pub) return false;
+    if (activeTab === 'shipper' && order.shipper.toUpperCase() !== pub) return false;
+    if (activeTab === 'inspector' && order.inspector.toUpperCase() !== pub) return false;
+
+    // Status filter
+    if (statusFilter !== 'all' && order.status !== statusFilter) return false;
+
+    // Search query filter (by order ID or address)
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      const matchesId = String(order.id).includes(q) || `ct-order-${order.id}`.includes(q);
+      const matchesAddr =
+        order.buyer.toLowerCase().includes(q) ||
+        order.supplier.toLowerCase().includes(q) ||
+        order.shipper.toLowerCase().includes(q) ||
+        order.inspector.toLowerCase().includes(q);
+      if (!matchesId && !matchesAddr) return false;
+    }
+
     return true;
   });
+
+  const exportOrdersCsv = () => {
+    if (filteredOrders.length === 0) return;
+    const headers = ['Order ID', 'Status', 'Amount (XLM)', 'Buyer', 'Supplier', 'Shipper', 'Inspector', 'Created Block'];
+    const rows = filteredOrders.map((o) => [
+      o.id,
+      o.status,
+      o.amount,
+      o.buyer,
+      o.supplier,
+      o.shipper,
+      o.inspector,
+      o.createdAt,
+    ]);
+
+    const csvContent =
+      'data:text/csv;charset=utf-8,' +
+      [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `chaintrace_orders_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-12">
@@ -31,39 +77,89 @@ export default function DashboardPage() {
           <p className="text-sm text-ink-muted">Track your supply chain orders and escrow milestones with on-chain precision.</p>
         </div>
         {isConnected && (
-          <Link href="/orders/create">
-            <button className="btn-primary h-11 px-5 whitespace-nowrap">
-              <span className="material-symbols-outlined text-[20px]">add</span>
-              NEW ORDER
+          <div className="flex items-center gap-3">
+            <button
+              onClick={exportOrdersCsv}
+              disabled={filteredOrders.length === 0}
+              className="btn-secondary h-11 px-4 text-xs font-mono tracking-wider"
+              title="Export filtered orders as CSV"
+            >
+              <span className="material-symbols-outlined text-[18px]">download</span>
+              EXPORT CSV
             </button>
-          </Link>
+            <Link href="/orders/create">
+              <button className="btn-primary h-11 px-5 whitespace-nowrap">
+                <span className="material-symbols-outlined text-[20px]">add</span>
+                NEW ORDER
+              </button>
+            </Link>
+          </div>
         )}
       </div>
 
-      {/* Role Filter Tabs */}
-      <div className="flex overflow-x-auto no-scrollbar gap-2 mb-8 border-b border-hairline pb-2">
-        {([
-          { id: 'all', label: 'As All' },
-          { id: 'buyer', label: 'As Buyer' },
-          { id: 'supplier', label: 'As Supplier' },
-          { id: 'shipper', label: 'As Shipper' },
-          { id: 'inspector', label: 'As Inspector' },
-        ] as const).map((tab) => {
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-md text-xs font-mono uppercase tracking-wider transition-colors whitespace-nowrap border ${
-                isActive
-                  ? 'bg-elevated text-ink border-line'
-                  : 'bg-transparent border-transparent text-ink-muted hover:text-ink hover:bg-elevated/40'
-              }`}
+      {/* Search & Filter Controls */}
+      <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center mb-6">
+        <div className="flex overflow-x-auto no-scrollbar gap-2 border-b border-hairline pb-2 md:border-b-0 md:pb-0">
+          {([
+            { id: 'all', label: 'As All' },
+            { id: 'buyer', label: 'As Buyer' },
+            { id: 'supplier', label: 'As Supplier' },
+            { id: 'shipper', label: 'As Shipper' },
+            { id: 'inspector', label: 'As Inspector' },
+          ] as const).map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-2 rounded-md text-xs font-mono uppercase tracking-wider transition-colors whitespace-nowrap border ${
+                  isActive
+                    ? 'bg-elevated text-ink border-line'
+                    : 'bg-transparent border-transparent text-ink-muted hover:text-ink hover:bg-elevated/40'
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {isConnected && (
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1 md:w-64">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search ID or Address..."
+                className="w-full bg-elevated/60 border border-hairline rounded-md px-3 py-1.5 text-xs font-mono text-ink placeholder:text-ink-faint focus:outline-none focus:border-brand"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1.5 text-ink-faint hover:text-ink text-xs"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-elevated/60 border border-hairline rounded-md px-3 py-1.5 text-xs font-mono text-ink-muted focus:outline-none focus:border-brand cursor-pointer"
             >
-              {tab.label}
-            </button>
-          );
-        })}
+              <option value="all">ALL STATUSES</option>
+              <option value="created">CREATED</option>
+              <option value="funded">FUNDED</option>
+              <option value="shipped">SHIPPED</option>
+              <option value="delivered">DELIVERED</option>
+              <option value="inspected_passed">PASSED</option>
+              <option value="inspected_failed">FAILED</option>
+              <option value="disputed">DISPUTED</option>
+              <option value="refunded">REFUNDED</option>
+            </select>
+          </div>
+        )}
       </div>
 
       {/* Disconnected Alert State */}
