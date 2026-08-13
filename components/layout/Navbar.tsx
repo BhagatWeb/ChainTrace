@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import WalletButton from '../wallet/WalletButton';
+import { NetworkStatus } from '../ui/network-status';
 
 const navLinks = [
   { href: '/dashboard', label: 'Dashboard' },
@@ -43,8 +44,9 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Wallet Connection (Desktop) */}
-        <div className="hidden md:flex items-center gap-4">
+        {/* Wallet Connection & Network Status (Desktop) */}
+        <div className="hidden md:flex items-center gap-3">
+          <NetworkStatus />
           <WalletButton />
         </div>
 
