@@ -45,6 +45,20 @@ export class EscrowContractClient {
     }
   }
 
+  async hasActiveEscrow(orderId: number, publicKey: string): Promise<boolean> {
+    try {
+      const result = await stellar.simulateRead({
+        publicKey,
+        contractId: this.contractId,
+        method: 'has_active_escrow',
+        args: [StellarSdk.nativeToScVal(orderId, { type: 'u64' })],
+      });
+      return result ? Boolean(StellarSdk.scValToNative(result)) : false;
+    } catch {
+      return false;
+    }
+  }
+
   async deposit(publicKey: string, orderId: number, amountXlm: string): Promise<{ hash: string }> {
     return stellar.buildAndSignTx({
       publicKey,
