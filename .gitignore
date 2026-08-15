@@ -34,7 +34,6 @@ next-env.d.ts
 
 # rust / soroban
 **/target/
-Cargo.lock
 
 # stitch designs
 stitch_chaintrace_web3_logistics_platform/
