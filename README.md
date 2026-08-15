@@ -1,5 +1,8 @@
 # ⚡ ChainTrace
 
+> [!TIP]
+> 🚀 **Sprint & Submission Audit Complete**: Review the latest production fixes, features, and test coverage in the [Submission Updates](#-submission-updates) section below.
+
 <div align="center">
 
 **Cross-Border Supply Chain Milestone Escrow & Financing**
@@ -7,7 +10,7 @@
 *Trustless trade coordination and payments secured by Stellar Soroban smart contracts*
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-chain--trace.netlify.app-6366f1?style=for-the-badge&logo=netlify)](https://chain-trace.netlify.app/)
-[![GitHub](https://img.shields.io/badge/Source_Code-BhagatWeb%2F--ChainTrace---181717?style=for-the-badge&logo=github)](https://github.com/BhagatWeb/-ChainTrace-)
+[![GitHub](https://img.shields.io/badge/Source_Code-BhagatWeb%2FChainTrace-181717?style=for-the-badge&logo=github)](https://github.com/BhagatWeb/ChainTrace)
 [![Network](https://img.shields.io/badge/Network-Stellar_Testnet-00B4D8?style=for-the-badge&logo=stellar)](https://stellar.expert/explorer/testnet)
 [![Built for RiseIn](https://img.shields.io/badge/Built_for-RiseIn_Level_4-f59e0b?style=for-the-badge)](https://www.risein.com/)
 
@@ -18,20 +21,21 @@
 ## 📋 Table of Contents
 
 1. [Problem Statement](#-problem-statement)
-2. [Why Stellar?](#-why-stellar)
-3. [Live Deployment](#-live-deployment)
-4. [Contract Addresses & Transactions](#-contract-addresses--transactions)
-5. [User Onboarding & Feedback](#-user-onboarding--feedback)
-6. [Architecture](#-architecture)
-7. [Smart Contracts](#-smart-contracts)
-8. [Production Hardening (Level 4)](#-production-hardening-level-4)
-9. [Tech Stack](#-tech-stack)
-10. [Project Structure](#-project-structure)
-11. [Testing](#-testing)
-12. [CI/CD Pipeline](#-cicd-pipeline)
-13. [Local Development](#-local-development)
-14. [Roadmap](#-roadmap)
-15. [Author](#-author)
+2. [Submission Updates](#-submission-updates)
+3. [Why Stellar?](#-why-stellar)
+4. [Live Deployment](#-live-deployment)
+5. [Contract Addresses & Transactions](#-contract-addresses--transactions)
+6. [User Onboarding & Feedback](#-user-onboarding--feedback)
+7. [Architecture](#-architecture)
+8. [Smart Contracts](#-smart-contracts)
+9. [Production Hardening (Level 4)](#-production-hardening-level-4)
+10. [Tech Stack](#-tech-stack)
+11. [Project Structure](#-project-structure)
+12. [Testing](#-testing)
+13. [CI/CD Pipeline](#-cicd-pipeline)
+14. [Local Development](#-local-development)
+15. [Roadmap](#-roadmap)
+16. [Author](#-author)
 
 ---
 
@@ -47,6 +51,99 @@ Cross-border supply chains suffer from severe counterparty risks, operational op
 | **Opaque Disputes** | If goods are damaged or misrouted, funds get locked up indefinitely due to a lack of transparent state resolution. |
 
 **ChainTrace** eliminates these inefficiencies by replacing legacy trade finance rails with programmable Soroban smart contracts. Buyers lock funds in an on-chain escrow vault; funds are automatically released to suppliers incrementally based on verifiable logistics milestones—no costly banking intermediaries required.
+
+---
+
+## 🚀 Submission Updates
+
+Sprint Summary: 31 commits (12 fixes · 11 features · 8 tests) delivering end-to-end security hardening, on-chain dispute resolution, factoring calculator utilities, and expanded test coverage.
+
+### 🛡️ Bug Fixes
+
+| File | Issue / Bug Description | Resolution / Fix Applied |
+|---|---|---|
+| `contracts/order-contract/src/lib.rs` | Missing input validation permitted zero or negative order amounts. | Added strict `amount > 0` validation panic check in `create_order`. |
+| `contracts/escrow-contract/src/lib.rs` | Escrow deposits lacked lower-bound validation. | Enforced `amount > 0` positive check on buyer deposit invocations. |
+| `contracts/escrow-contract/src/lib.rs` | Repeated deposits on the same order could overwrite existing escrow records. | Added active escrow existence guard preventing double deposits on active orders. |
+| `contracts/escrow-contract/src/lib.rs` | Single release cleared entire escrow flag even on partial amount releases. | Added progressive milestone subtraction accounting and partial release support. |
+| `contracts/finance-contract/src/lib.rs` | Factoring pool allowed zero/negative loan requests. | Enforced positive principal loan amount check in `request_loan`. |
+| `contracts/finance-contract/src/lib.rs` | Borrowers could take duplicate active loans against the same order ID. | Added iteration check preventing multiple unpaid loans per order. |
+| `contracts/order-contract/src/test.rs` | Unused variable warning `escrow_contract` during test compilation. | Prefixed with underscore `_escrow_contract` to clear Rust compiler lints. |
+| `lib/stellar.ts` | High-precision decimal string conversions could fail on edge cases. | Hardened `stroopsToXlm` and `xlmToStroops` with defensive BigInt sanitization. |
+| `lib/stellar.ts` | Address formatting could throw on empty or non-string values. | Added null/empty checks and length guard to `formatAddress`. |
+| `vitest.config.ts` | Vitest runner matched extraneous template tests in `_web` subfolder. | Configured explicit `include: ['__tests__/**/*.test.{ts,tsx}']` and `exclude`. |
+| `package.json` | Missing `@testing-library/dom` peer dependency for component tests. | Installed `@testing-library/dom` as direct devDependency. |
+
+### ✨ New Features
+
+- **On-Chain Dispute Mechanism**:
+  - Added `OrderStatus::Disputed` status variant and `dispute_order(env, caller, order_id)` circuit in the Order Contract.
+  - Added `disputeOrder` method to `OrderContractClient`.
+  - Added interactive dispute trigger and refund handling for buyers and suppliers in Order Details view.
+- **Milestone Progress Tracker (`components/orders/OrderProgress.tsx`)**:
+  - Built a dynamic multi-stage visual pipeline showing real-time lifecycle status (Created ➔ Funded ➔ Shipped ➔ Delivered ➔ Completed).
+  - Integrated dispute/refund warning badges and progress percentage calculations.
+- **Trade Factoring & Advance Calculator (`components/finance/FactoringCalculator.tsx`)**:
+  - Interactive liquidity calculator allowing suppliers to simulate advance rates (50%–90%), fixed 5% APR financing fees, and net instant payouts.
+- **Dashboard Search, Filter & CSV Export**:
+  - Real-time search by Order ID or Stellar public address.
+  - Multi-status filter dropdown (All, Created, Funded, Shipped, Delivered, Passed, Failed, Disputed, Refunded).
+  - One-click CSV export utility generating audit-ready order logs.
+- **Live Network Health & Soroban RPC Latency Monitor (`components/ui/network-status.tsx`)**:
+  - Live indicator in navigation bar tracking Stellar Testnet RPC health and ping response latency in milliseconds.
+
+### 🧪 Test Additions
+
+| Test File | Test Case | Target Covered |
+|---|---|---|
+| `contracts/order-contract/src/test.rs` | `test_create_order_zero_amount` | Rejection of non-positive order amounts |
+| `contracts/order-contract/src/test.rs` | `test_order_dispute_and_refund` | Full dispute initiation and subsequent refund flow |
+| `contracts/escrow-contract/src/test.rs` | `test_deposit_zero_amount` | Rejection of zero-value escrow deposits |
+| `contracts/escrow-contract/src/test.rs` | `test_deposit_duplicate_active` | Guard against duplicate deposits on active escrows |
+| `contracts/escrow-contract/src/test.rs` | `test_partial_release_and_full_completion` | Partial release milestone accounting |
+| `contracts/escrow-contract/src/test.rs` | `test_refund_payment` | Direct refund execution to buyer |
+| `contracts/finance-contract/src/test.rs` | `test_loan_zero_amount` | Validation on non-positive loan requests |
+| `contracts/finance-contract/src/test.rs` | `test_duplicate_active_loan` | Prevention of multiple active loans per order |
+| `contracts/finance-contract/src/test.rs` | `test_get_loan_by_order` | Order-to-loan lookup query validation |
+| `__tests__/components/OrderProgress.test.tsx` | Stage & Status Render Tests (5 tests) | Progression rendering across created, funded, completed, disputed, refunded |
+| `__tests__/components/FactoringCalculator.test.tsx` | Calculator & Slider Tests (2 tests) | Dynamic computation of advance amounts and 5% interest fees |
+| `__tests__/lib/contracts.test.ts` | Constants & Client Methods (2 tests) | Status color/label completeness and client instantiation |
+
+### 📜 Commit Timeline
+
+| # | Type | Commit Message |
+|---|---|---|
+| 1 | Fix | Add positive amount validation to order contract creation |
+| 2 | Fix | Add non-zero validation checks in escrow contract deposit handler |
+| 3 | Test | Add unit test verifying order creation rejects zero or negative amounts |
+| 4 | Fix | Harden Stroop to XLM conversion logic for high precision decimals |
+| 5 | Fix | Add duplicate active deposit guard in escrow contract storage |
+| 6 | Feature | Support partial release milestone accounting in escrow vault |
+| 7 | Feature | Add disputed status variant and dispute order handler to order contract |
+| 8 | Feature | Expose dispute order method in order contract client |
+| 9 | Feature | Add dispute status badge styling and labels in constants |
+| 10 | Test | Update order contract unit tests with full dispute resolution flow |
+| 11 | Fix | Fix unused variable warning in order contract test suite |
+| 12 | Fix | Prevent multiple active loans against same order in finance contract |
+| 13 | Test | Add zero amount and duplicate loan validation tests in finance contract |
+| 14 | Feature | Add order loan lookup query helper in finance contract |
+| 15 | Fix | Harden wallet address truncation for edge case strings |
+| 16 | Fix | Configure vitest test runner to isolate root test suites |
+| 17 | Feature | Create interactive supply chain milestone progress bar component |
+| 18 | Test | Add unit test suite for milestone progress component |
+| 19 | Feature | Build trade factoring and loan interest calculator component |
+| 20 | Test | Add unit tests for factoring calculator formula and bounds |
+| 21 | Feature | Add on-chain dispute action trigger modal in order view |
+| 22 | Feature | Integrate factoring calculator for suppliers in order details |
+| 23 | Feature | Add live search and order filtering by address in dashboard |
+| 24 | Feature | Add CSV export functionality for order history logs |
+| 25 | Feature | Create live Soroban RPC network latency and ledger monitor component |
+| 26 | Feature | Integrate network health monitor into navigation bar |
+| 27 | Test | Add contract client integration and status mapping unit tests |
+| 28 | Feature | Add hasActiveEscrow query method to escrow contract client |
+| 29 | Fix | Install testing library DOM dev dependency for robust component testing |
+| 30 | Feature | Update order details layout to incorporate milestone progress tracking |
+| 31 | Documentation | Update README with sprint submission report, security audit, and test matrix |
 
 ---
 
@@ -246,21 +343,24 @@ The following production improvements were implemented and tested in Level 4:
 
 | Suite | Tests | Status |
 |-------|-------|--------|
-| Frontend (Vitest) | 12 tests | ✅ All Passing |
-| Contracts (Rust) | 6 tests | ✅ All Passing |
-| **Total** | **18 tests** | ✅ **18/18 Passing** |
+| Frontend (Vitest) | 21 tests | ✅ All Passing |
+| Contracts (Rust) | 15 tests | ✅ All Passing |
+| **Total** | **36 tests** | ✅ **36/36 Passing** |
 
 ### Frontend Tests (Vitest)
 
 ```bash
 npm run test
 
- ✓ __tests__/components/Badge.test.tsx 
- ✓ __tests__/components/Button.test.tsx 
- ✓ __tests__/lib/stellar.test.ts 
+ ✓ __tests__/lib/stellar.test.ts (6 tests)
+ ✓ __tests__/lib/contracts.test.ts (2 tests)
+ ✓ __tests__/components/Badge.test.tsx (3 tests)
+ ✓ __tests__/components/Button.test.tsx (3 tests)
+ ✓ __tests__/components/FactoringCalculator.test.tsx (2 tests)
+ ✓ __tests__/components/OrderProgress.test.tsx (5 tests)
  
- Test Files  3 passed (3)
-      Tests  12 passed (12)
+ Test Files  6 passed (6)
+      Tests  21 passed (21)
 ```
 
 ### Contract Tests (Rust)
@@ -268,15 +368,24 @@ npm run test
 ```bash
 # Order Contract
 test test::test_create_order ... ok
+test test::test_create_order_zero_amount - should panic ... ok
 test test::test_order_lifecycle ... ok
+test test::test_order_dispute_and_refund ... ok
 
 # Escrow Contract
 test test::test_deposit ... ok
+test test::test_deposit_zero_amount - should panic ... ok
+test test::test_deposit_duplicate_active - should panic ... ok
+test test::test_partial_release_and_full_completion ... ok
+test test::test_refund_payment ... ok
 
 # Finance Contract (Factoring Module)
 test test::test_insufficient_liquidity - should panic ... ok
+test test::test_loan_zero_amount - should panic ... ok
 test test::test_loan_request ... ok
+test test::test_get_loan_by_order ... ok
 test test::test_loan_repayment ... ok
+test test::test_duplicate_active_loan - should panic ... ok
 ```
 
 ---
