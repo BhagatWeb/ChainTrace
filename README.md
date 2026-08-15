@@ -1,8 +1,5 @@
 # ⚡ ChainTrace
 
-> [!TIP]
-> 🚀 **Sprint & Submission Audit Complete**: Review the latest production fixes, features, and test coverage in the [Submission Updates](#-submission-updates) section below.
-
 <div align="center">
 
 **Cross-Border Supply Chain Milestone Escrow & Financing**
